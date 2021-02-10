@@ -6,7 +6,9 @@ package com.voximplant.foregroundservice;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.app.NotificationManager;
 import android.os.Build;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -84,6 +86,46 @@ public class VIForegroundServiceModule extends ReactContextBaseJavaModule {
             promise.resolve(null);
         } else {
             promise.reject(ERROR_SERVICE_ERROR, "VIForegroundService: Foreground service is not started");
+        }
+    }
+
+    @ReactMethod
+    public void updateNotification(ReadableMap notificationConfig, Promise promise) {
+        if (notificationConfig == null) {
+            promise.reject(ERROR_INVALID_CONFIG, "ForegroundService: Notification config is invalid");
+            return;
+        }
+
+        if (!notificationConfig.hasKey("id")) {
+            promise.reject(ERROR_INVALID_CONFIG , "ForegroundService: id is required");
+            return;
+        }
+
+        if (!notificationConfig.hasKey("title")) {
+            promise.reject(ERROR_INVALID_CONFIG, "ForegroundService: title is reqired");
+            return;
+        }
+
+        if (!notificationConfig.hasKey("message")) {
+            promise.reject(ERROR_INVALID_CONFIG, "ForegroundService: message is required");
+            return;
+        }
+
+        try{
+
+            Intent intent = new Intent(getReactApplicationContext(), VIForegroundService.class);
+            intent.setAction(Constants.ACTION_UPDATE_NOTIFICATION);
+            intent.putExtra(NOTIFICATION_CONFIG, Arguments.toBundle(notificationConfig));
+            ComponentName componentName = getReactApplicationContext().startService(intent);
+
+            if (componentName != null) {
+                promise.resolve(null);
+            } else {
+                promise.reject(ERROR_SERVICE_ERROR, "Update notification failed.");
+            }
+        }
+        catch(IllegalStateException e){
+            promise.reject(ERROR_SERVICE_ERROR, "Update notification failed, service failed to start.");
         }
     }
 

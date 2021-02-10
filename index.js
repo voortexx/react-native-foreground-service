@@ -62,6 +62,21 @@ export default class VIForegroundService {
     }
 
     /**
+     * Updates a notification of a running service. Make sure to use the same ID
+     * or it will trigger a separate notification.
+     * Note: this method might fail if called right after starting the service
+     * since the service might not be yet ready.
+     * If service is not running, it will be started automatically like calling startService.
+     * @param {NotificationConfig} notificationConfig - Notification config
+     * @return Promise
+     */
+    static async updateNotification(notificationConfig) {
+
+        console.log(' Update Service Triggered')
+        return await ForegroundServiceModule.updateNotification(notificationConfig);
+    }
+
+    /**
      * Stop foreground service
      *
      * @return Promise
