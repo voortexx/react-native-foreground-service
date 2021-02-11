@@ -122,13 +122,17 @@ class NotificationHelper {
         }
 
         notificationBuilder.setContentTitle(notificationConfig.getString("title"))
-                .setContentText(notificationConfig.getString("text"))
                 .setPriority(priority)
                 .setContentIntent(pendingIntent);
 
         String iconName = notificationConfig.getString("icon");
         if (iconName != null) {
             notificationBuilder.setSmallIcon(getResourceIdForResourceName(context, iconName));
+        }
+
+        String textMessage = notificationConfig.getString("text");
+        if (textMessage != null) {
+            notificationBuilder.setContentText(textMessage);
         }
 
         return notificationBuilder.build();

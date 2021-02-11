@@ -73,11 +73,6 @@ public class VIForegroundServiceModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        if (!notificationConfig.hasKey("text")) {
-            promise.reject(ERROR_INVALID_CONFIG, "VIForegroundService: text is required");
-            return;
-        }
-
         Intent intent = new Intent(getReactApplicationContext(), VIForegroundService.class);
         intent.setAction(Constants.ACTION_FOREGROUND_SERVICE_START);
         intent.putExtra(NOTIFICATION_CONFIG, Arguments.toBundle(notificationConfig));
